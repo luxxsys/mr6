@@ -62,6 +62,5 @@ def getDistance(Lat_A, Lng_A, Lat_B, Lng_B):
         c2 = (sin(xx) + xx) * (sin(pA) - sin(pB)) ** 2 / sin(xx / 2) ** 2
         dr = flatten / 8 * (c1 - c2)
         distance = ra * (xx + dr)
-        with open(distancefile, 'w') as hand:
-                hand.write(str(distance))
+	fileRW(distancefile, 'w', distance)
         return distance

@@ -3,6 +3,13 @@ from django.shortcuts import redirect,render
 from django.core.urlresolvers import reverse
 from .define import *
 
+def getLocationLog(request):
+	lines=fileRW(locationfile, 'rl')
+	response=HttpResponse()
+	for line in lines[-5:]:
+		response.write(line+'<br/>')
+	return response
+
 def setLocation(request):
 	phoneid	= request.GET.get('id','')
 	lo = request.GET.get('lo','')

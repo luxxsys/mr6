@@ -26,6 +26,7 @@ urlpatterns = [
 	#url(r'^setlocation(\d+\.\d+),(\d+\.\d+)$', smarthome_views.setLocation, name='setLocation'),
 	url(r'^setlocation$', smarthome_views.setLocation, name='setLocation'),
 	url(r'^setstate$', smarthome_views.setState, name='setState'),
+	url(r'^log$', smarthome_views.getLocationLog, name='getLocationLog'),
 
 	#url(r'.*', smarthome_views.index, name='default'),
 ]

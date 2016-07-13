@@ -8,7 +8,7 @@ def setLocation(request):
 	lo = request.GET.get('lo','')
 	la = request.GET.get('la','')
 
-	fileRW(locationfile,'a',str(getTimeNow()+'<'+la+','+lo+'<'+phoneid+'<'+'\n'))
+	fileRW(locationfile,'a',str(getTimeNow()+'<'+la+','+lo+'<'+phoneid+'\n'))
 	#2016-07-05 06:15:49<39.789459,116.557697<70a618c25a2bb852
 	return HttpResponse()
 

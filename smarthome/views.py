@@ -10,16 +10,14 @@ def setLocation(request):
 
 	fileRW(locationfile,'a',str(getTimeNow()+'<'+la+','+lo+'<'+phoneid+'\n'))
 	#2016-07-05 06:15:49<39.789459,116.557697<70a618c25a2bb852
+	fileRW(distancefile, 'w', str(getDistance()))
 	return HttpResponse()
 
 def getSensor(request):
 
+	distance=getDistance()
+
 	aircmstate=int(fileRW(aircmfile))
-	lastestlocation=getLocation()
-	if(lastestlocation):
-		curLa=float(lastestlocation[1].split(',')[0])
-		curLo=float(lastestlocation[1].split(',')[1])
-		distance=getDistance(curLa,curLo,tarLa,tarLo)
 	if(aircmstate<0):
 		aircstate=fileRW(aircfile)
 	else:

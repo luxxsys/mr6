@@ -20,10 +20,10 @@ tarLo=116.56062285533284
 #谷歌地球：39.7989891578,116.5601696845
 #北纬N39°47′56.36″ 东经E116°33′36.61″
 
-def	getTimeNow():
+def getTimeNow():
 	return time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
 
-def	fileRW(myfile, method='r',content=None):
+def fileRW(myfile, method='r',content=None):
 	content=str(content)
 	if('r'==method):
 		with open(myfile, 'r') as hand:
@@ -38,7 +38,7 @@ def	fileRW(myfile, method='r',content=None):
 		with open(myfile, 'a') as hand:
 			return hand.write(content)
 
-def	getLocation():
+def getLocation():
 	locationlines=fileRW(locationfile, 'rl')
 	if(locationlines):
 		lastestlocation=locationlines[-1]
@@ -47,20 +47,41 @@ def	getLocation():
 		return ''
 
 # output distance 距离(km)
-def	getDistance(Lat_A, Lng_A, Lat_B, Lng_B):
+def getDistance():
+	lastestlocation=getLocation()
+	Lat_A=float(lastestlocation[1].split(',')[0])
+	Lng_A=float(lastestlocation[1].split(',')[1])
+	Lat_B=tarLa
+	Lng_B=tarLo
+
 	ra = 6378.140  # 赤道半径 (km)
 	rb = 6356.755  # 极半径 (km)
-	flatten	= (ra -	rb)	/ ra  #	地球扁率
-	rad_lat_A =	radians(Lat_A)
-	rad_lng_A =	radians(Lng_A)
-	rad_lat_B =	radians(Lat_B)
-	rad_lng_B =	radians(Lng_B)
-	pA = atan(rb / ra *	tan(rad_lat_A))
-	pB = atan(rb / ra *	tan(rad_lat_B))
-	xx = acos(sin(pA) *	sin(pB)	+ cos(pA) *	cos(pB)	* cos(rad_lng_A	- rad_lng_B))
-	c1 = (sin(xx) -	xx)	* (sin(pA) + sin(pB)) ** 2 / cos(xx	/ 2) **	2
-	c2 = (sin(xx) +	xx)	* (sin(pA) - sin(pB)) ** 2 / sin(xx	/ 2) **	2
+	flatten = (ra - rb) / ra  #地球扁率
+	rad_lat_A = radians(Lat_A)
+	rad_lng_A = radians(Lng_A)
+	rad_lat_B = radians(Lat_B)
+	rad_lng_B = radians(Lng_B)
+	pA = atan(rb/ra*tan(rad_lat_A))
+	pB = atan(rb/ra*tan(rad_lat_B))
+	xx = acos(sin(pA) * sin(pB) + cos(pA) * cos(pB) * cos(rad_lng_A - rad_lng_B))
+	c1 = (sin(xx) - xx) * (sin(pA) + sin(pB)) ** 2 / cos(xx / 2) ** 2
+	c2 = (sin(xx) + xx) * (sin(pA) - sin(pB)) ** 2 / sin(xx / 2) ** 2
 	dr = flatten / 8 * (c1 - c2)
-	distance = ra *	(xx	+ dr)
-	fileRW(distancefile, 'w', distance)
+	distance = ra * (xx + dr)
 	return distance
+#def getDistance(Lat_A, Lng_A, Lat_B, Lng_B):
+#	ra = 6378.140  # 赤道半径 (km)
+#	rb = 6356.755  # 极半径 (km)
+#	flatten	= (ra -	rb) / ra  #地球扁率
+#	rad_lat_A = radians(Lat_A)
+#	rad_lng_A = radians(Lng_A)
+#	rad_lat_B = radians(Lat_B)
+#	rad_lng_B = radians(Lng_B)
+#	pA = atan(rb/ra*tan(rad_lat_A))
+#	pB = atan(rb/ra*tan(rad_lat_B))
+#	xx = acos(sin(pA) * sin(pB) + cos(pA) *	cos(pB)	* cos(rad_lng_A	- rad_lng_B))
+#	c1 = (sin(xx) -	xx) * (sin(pA) + sin(pB)) ** 2 / cos(xx / 2) ** 2
+#	c2 = (sin(xx) +	xx) * (sin(pA) - sin(pB)) ** 2 / sin(xx	/ 2) **	2
+#	dr = flatten / 8 * (c1 - c2)
+#	distance = ra *	(xx + dr)
+#	return distance

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import serial,re,time
-from smarthome.define import fileRW
+from smarthome.define import fileRW,getDistance
 
 tempfile='mr6_tempfile'
 humifile='mr6_humifile'
@@ -40,7 +40,8 @@ try:
 		print('aircmfile:'+str(aircmstate))
 		print('aircfile:'+str(aircstate))
 		if(aircmstate<0):
-			distance=float(fileRW(distancefile))
+			#distance=fileRW(distancefile)
+			distance=getDistance()
 			if(distance*1000<200):
 				fileRW(aircfile, 'w', 1)
 			else:

@@ -11,8 +11,8 @@ lightfile='/home/pi/mr6/mr6_lightfile'
 lightmfile='/home/pi/mr6/mr6_lightmfile'
 distancefile='/home/pi/mr6/mr6_distancefile'
 
-tarLa=39.79851883442484
-tarLo=116.56062285533284
+tarLa=39.798968061371966
+tarLo=116.56022590695919
 #谷歌地图：39.8000607119,116.5659847136
 #百度地图：39.8057960000,116.5725510000
 #腾讯高德：39.8000702378,116.5659979845
@@ -69,19 +69,3 @@ def getDistance():
 	dr = flatten / 8 * (c1 - c2)
 	distance = ra * (xx + dr)
 	return distance
-#def getDistance(Lat_A, Lng_A, Lat_B, Lng_B):
-#	ra = 6378.140  # 赤道半径 (km)
-#	rb = 6356.755  # 极半径 (km)
-#	flatten	= (ra -	rb) / ra  #地球扁率
-#	rad_lat_A = radians(Lat_A)
-#	rad_lng_A = radians(Lng_A)
-#	rad_lat_B = radians(Lat_B)
-#	rad_lng_B = radians(Lng_B)
-#	pA = atan(rb/ra*tan(rad_lat_A))
-#	pB = atan(rb/ra*tan(rad_lat_B))
-#	xx = acos(sin(pA) * sin(pB) + cos(pA) *	cos(pB)	* cos(rad_lng_A	- rad_lng_B))
-#	c1 = (sin(xx) -	xx) * (sin(pA) + sin(pB)) ** 2 / cos(xx / 2) ** 2
-#	c2 = (sin(xx) +	xx) * (sin(pA) - sin(pB)) ** 2 / sin(xx	/ 2) **	2
-#	dr = flatten / 8 * (c1 - c2)
-#	distance = ra *	(xx + dr)
-#	return distance

@@ -37,12 +37,9 @@ try:
 	while True:
 		aircmstate=int(fileRW(aircmfile))
 		aircstate=int(fileRW(aircfile))
-		print('aircmfile:'+str(aircmstate))
-		print('aircfile:'+str(aircstate))
 		if(aircmstate<0):
-			#distance=fileRW(distancefile)
 			distance=getDistance()
-			if(distance*1000<200):
+			if(distance*1000<300):
 				fileRW(aircfile, 'w', 1)
 			else:
 				fileRW(aircfile, 'w', 0)

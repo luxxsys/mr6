@@ -65,6 +65,8 @@ def getSensor(request):
 	else:
 		luxstate=''
 
+	clientip=getClientIP(request)
+
 	data={\
 	'distance'		:	'{:.8f}'.format(distance), \
 	'temp'			:	fileRW(tempfile), \
@@ -73,12 +75,14 @@ def getSensor(request):
 	'light'			:	lightstate,	\
 	'airc'			:	aircstate, \
 	'lightbtn'		:	lightbtn, \
-	'aircbtn'		:	aircbtn	\
+	'aircbtn'		:	aircbtn,\
+	'clientip'		:	clientip\
 	}
 
 	return render(request,'show.html',data)
 
 def setState(request):
+	clientip=getClientIP(request)
 	setlightstate=request.GET.get('setlightstate','')
 	setaircstate=request.GET.get('setaircstate','')
 	autolightstate=request.GET.get('autolight','')
@@ -90,8 +94,10 @@ def setState(request):
 		elif('Off'==setlightstate):
 			setlightdigital=0
 		fileRW(lightmfile, 'w',	setlightdigital)
+		fileRW(logfile, 'a', getTimeNow()+'>'+clientip+'>set_light_to>'+str(setlightdigital)+'\n')
 	elif(autolightstate):
 		fileRW(lightmfile, 'w',	-1)
+		fileRW(logfile, 'a', getTimeNow()+'>'+clientip+'>set_light_to>auto'+'\n')
 
 	if(setaircstate):
 		if('On'==setaircstate):
@@ -99,7 +105,9 @@ def setState(request):
 		elif('Off'==setaircstate):
 			setaircdigital=0
 		fileRW(aircmfile, 'w', setaircdigital)
+		fileRW(logfile, 'a', getTimeNow()+'>'+clientip+'>set_airc_to>'+str(setaircdigital)+'\n')
 	elif(autoaircstate):
 		fileRW(aircmfile, 'w', -1)
+		fileRW(logfile, 'a', getTimeNow()+'>'+clientip+'>set_airc_to>auto'+'\n')
 
 	return redirect(reverse('smarthome.views.getSensor', args=[]))

@@ -10,6 +10,7 @@ locationfile='/home/pi/mr6/mr6_locationfile'
 lightfile='/home/pi/mr6/mr6_lightfile'
 lightmfile='/home/pi/mr6/mr6_lightmfile'
 distancefile='/home/pi/mr6/mr6_distancefile'
+logfile='/home/pi/mr6/mr6_log'
 
 tarLa=39.798968061371966
 tarLo=116.56022590695919
@@ -69,3 +70,9 @@ def getDistance():
 	dr = flatten / 8 * (c1 - c2)
 	distance = ra * (xx + dr)
 	return distance
+
+def getClientIP(request):
+	if 'HTTP_X_FORWARDED_FOR' in request.META:
+		return request.META['HTTP_X_FORWARDED_FOR']
+	else:
+		return request.META['REMOTE_ADDR']

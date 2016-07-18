@@ -33,8 +33,8 @@ def setAirc(serial, state, times=1):
 
 mys0=serial.Serial('/dev/serial0', 9600, timeout=0.5)
 
-try:
-	while True:
+while True:
+	try:
 		aircmstate=int(fileRW(aircmfile))
 		aircstate=int(fileRW(aircfile))
 		if(aircmstate<0):
@@ -43,9 +43,9 @@ try:
 				fileRW(aircfile, 'w', 1)
 			else:
 				fileRW(aircfile, 'w', 0)
-			setAirc(mys0,aircstate, 5)
+			setAirc(mys0,aircstate, 3)
 		else:
-			setAirc(mys0,aircmstate, 5)
+			setAirc(mys0,aircmstate, 3)
 
 		#温湿度、光线反馈
 		#readline()接收一行数据直到遇到\n，净化、并将bytes解析为str
@@ -70,6 +70,6 @@ try:
 #			print(luxdata.group(1))
 			fileRW(luxfile, 'w', luxdata.group(1))
 
-except Exception as e:
-	print(e)
-	mys0.close()
+	except Exception as e:
+		print(e)
+		continue

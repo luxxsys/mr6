@@ -40,10 +40,12 @@ def getSensor(request):
 		aircstate=''
 
 	lightmstate=int(fileRW(lightmfile))
+	print(lightmstate)
 	if(lightmstate<0):
 		lightstate=int(fileRW(lightfile))
 	else:
 		lightstate=lightmstate
+	print(lightstate)
 	
 	if(1==lightstate):
 		lightbtn='Off'

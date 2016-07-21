@@ -14,6 +14,7 @@ distancefile='mr6_distancefile'
 
 aircstate_old=0
 lightstate_old=0
+IRP_TTL=IRP_TTL_init=60
 
 def setAirc(serial, state, times=1):
 	global aircstate_old
@@ -42,12 +43,10 @@ def setLight(serial, state, times=1):
 		if(1==state):
 			for i in range(0,times):
 				serial.write(msgon)
-				print(msgon)
 				time.sleep(1.5)
 		if(0==state):
 			for i in range(0,times):
 				serial.write(msgoff)
-				print(msgoff)
 				time.sleep(1.5)
 		lightstate_old=state
 
@@ -70,24 +69,16 @@ while True:
 		else:
 			setAirc(mys0,aircmstate, 3)
 
-		if(lightmstate<0):
-			lux=int(fileRW(luxfile))
-			if(lux>500):
-				fileRW(lightfile, 'w', 1)
-			else:
-				fileRW(lightfile, 'w', 0)
-			setLight(mys0,lightstate, 3)
-		else:
-			setLight(mys0,lightmstate, 3)
 
-		#温湿度、光线反馈
+
+		#温湿度、光线参数提取
 		#readline()接收一行数据直到遇到\n，净化、并将bytes解析为str
 		recv=mys0.readline().strip()
 		#print(recv)
 		
 		#data example: "HUMI52;TEMP28;LUX1021;"
 		#LUX有光为30，无光为1000，浮动两字节，自有长度匹配时才进行处理，否则为废串
-		if(20==len(recv) or 22==len(recv)):
+		if(25==len(recv) or 27==len(recv)):
 			recv=recv.decode('ascii') #收到为bytes，转为str
 			load=recv.split(';')
 
@@ -102,6 +93,25 @@ while True:
 			luxdata=re.search(r'LUX(\d+)', load[2])
 #			print(luxdata.group(1))
 			fileRW(luxfile, 'w', luxdata.group(1))
+
+			#获取红外人体值，如没人则计时器减少，如有人则计时器重置
+			IRPdata=re.search(r'IRP(\d+)', load[3])
+			if(lightmstate<0):
+				if(1==int(IRPdata.group(1))):
+					IRP_TTL=IRP_TTL_init
+					print(IRP_TTL)
+				else:
+					IRP_TTL-=1
+					print(IRP_TTL)
+				
+				if(int(luxdata.group(1))>500 and IRP_TTL>0):
+					fileRW(lightfile, 'w', 1)
+				elif(IRP_TTL<=0):
+					fileRW(lightfile, 'w', 0)
+				setLight(mys0,lightstate, 3)
+			else:
+				setLight(mys0,lightmstate, 3)
+
 
 	except Exception as e:
 		print(e)

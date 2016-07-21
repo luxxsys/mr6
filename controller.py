@@ -13,6 +13,7 @@ lightmfile='mr6_lightmfile'
 distancefile='mr6_distancefile'
 
 aircstate_old=0
+lightstate_old=0
 
 def setAirc(serial, state, times=1):
 	global aircstate_old
@@ -24,12 +25,31 @@ def setAirc(serial, state, times=1):
 		if(1==state):
 			for i in range(0,times):
 				serial.write(msgon)
-				time.sleep(1)
+				time.sleep(1.5)
 		if(0==state):
 			for i in range(0,times):
 				serial.write(msgoff)
-				time.sleep(1)
+				time.sleep(1.5)
 		aircstate_old=state
+
+def setLight(serial, state, times=1):
+	global lightstate_old
+	state=int(state)
+	i=0
+	msgon=b'00001001:00DD:01:0000'
+	msgoff=b'00001001:00DD:01:0001'
+	if(state!=lightstate_old):
+		if(1==state):
+			for i in range(0,times):
+				serial.write(msgon)
+				print(msgon)
+				time.sleep(1.5)
+		if(0==state):
+			for i in range(0,times):
+				serial.write(msgoff)
+				print(msgoff)
+				time.sleep(1.5)
+		lightstate_old=state
 
 mys0=serial.Serial('/dev/serial0', 9600, timeout=0.5)
 
@@ -37,6 +57,9 @@ while True:
 	try:
 		aircmstate=int(fileRW(aircmfile))
 		aircstate=int(fileRW(aircfile))
+		lightmstate=int(fileRW(lightmfile))
+		lightstate=int(fileRW(lightfile))
+
 		if(aircmstate<0):
 			distance=getDistance()
 			if(distance*1000<300):
@@ -46,6 +69,16 @@ while True:
 			setAirc(mys0,aircstate, 3)
 		else:
 			setAirc(mys0,aircmstate, 3)
+
+		if(lightmstate<0):
+			lux=int(fileRW(luxfile))
+			if(lux>500):
+				fileRW(lightfile, 'w', 1)
+			else:
+				fileRW(lightfile, 'w', 0)
+			setLight(mys0,lightstate, 3)
+		else:
+			setLight(mys0,lightmstate, 3)
 
 		#温湿度、光线反馈
 		#readline()接收一行数据直到遇到\n，净化、并将bytes解析为str
@@ -72,4 +105,4 @@ while True:
 
 	except Exception as e:
 		print(e)
-		continue
+#		continue

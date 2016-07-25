@@ -14,7 +14,7 @@ distancefile='mr6_distancefile'
 
 aircstate_old=0
 lightstate_old=0
-IRP_TTL=IRP_TTL_init=180
+IRP_TTL=IRP_TTL_init=20
 
 def setAirc(serial, state, times=1):
 	global aircstate_old
@@ -27,10 +27,12 @@ def setAirc(serial, state, times=1):
 			for i in range(0,times):
 				serial.write(msgon)
 				time.sleep(1.5)
+			fileRW(aircfile,'w',state)
 		if(0==state):
 			for i in range(0,times):
 				serial.write(msgoff)
 				time.sleep(1.5)
+			fileRW(aircfile,'w',state)
 		aircstate_old=state
 
 def setLight(serial, state, times=1):
@@ -45,11 +47,13 @@ def setLight(serial, state, times=1):
 			for i in range(0,times):
 				serial.write(msgon)
 				time.sleep(1.5)
+			fileRW(lightfile,'w',state)
 		if(0==state):
 			print('hereoff')
 			for i in range(0,times):
 				serial.write(msgoff)
 				time.sleep(1.5)
+			fileRW(lightfile,'w',state)
 		lightstate_old=state
 
 mys0=serial.Serial('/dev/serial0', 9600, timeout=0.5)
@@ -65,10 +69,9 @@ while True:
 		if(aircmstate<0):
 			distance=getDistance()
 			if(distance*1000<500):
-				fileRW(aircfile, 'w', 1)
+				setAirc(mys0,1,3)
 			else:
-				fileRW(aircfile, 'w', 0)
-			setAirc(mys0,aircstate, 3)
+				setAirc(mys0,0,3)
 		else:
 			setAirc(mys0,aircmstate, 3)
 
@@ -98,18 +101,15 @@ while True:
 			#print(luxdata.group(1))
 
 		elif('IRPACTIVE'==recv.decode('ascii') and lightmstate<0):
-			if(lux>500 and IRP_TTL<=0):
+			if(lux>500):
 				setLight(mys0,1,3)
-				fileRW(lightfile, 'w', 1)
 			IRP_TTL=IRP_TTL_init
 			print(IRP_TTL)
-			print(lux)
 		else:
 			IRP_TTL-=1
 			print(IRP_TTL)
 			if(0==IRP_TTL):
 				setLight(mys0,0,3)
-				fileRW(lightfile, 'w', 0)
 			elif(IRP_TTL<0):
 				IRP_TTL=0
 	except Exception as e:

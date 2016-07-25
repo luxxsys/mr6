@@ -14,7 +14,7 @@ distancefile='mr6_distancefile'
 
 aircstate_old=0
 lightstate_old=0
-IRP_TTL=IRP_TTL_init=60
+IRP_TTL=IRP_TTL_init=180
 
 def setAirc(serial, state, times=1):
 	global aircstate_old
@@ -41,10 +41,12 @@ def setLight(serial, state, times=1):
 	msgoff=b'00001001:00DD:01:0001'
 	if(state!=lightstate_old):
 		if(1==state):
+			print('hereon')
 			for i in range(0,times):
 				serial.write(msgon)
 				time.sleep(1.5)
 		if(0==state):
+			print('hereoff')
 			for i in range(0,times):
 				serial.write(msgoff)
 				time.sleep(1.5)
@@ -58,10 +60,11 @@ while True:
 		aircstate=int(fileRW(aircfile))
 		lightmstate=int(fileRW(lightmfile))
 		lightstate=int(fileRW(lightfile))
+		lux=int(fileRW(luxfile))
 
 		if(aircmstate<0):
 			distance=getDistance()
-			if(distance*1000<300):
+			if(distance*1000<500):
 				fileRW(aircfile, 'w', 1)
 			else:
 				fileRW(aircfile, 'w', 0)
@@ -69,6 +72,8 @@ while True:
 		else:
 			setAirc(mys0,aircmstate, 3)
 
+		if(lightmstate>=0):
+			setLight(mys0,lightmstate,3)
 
 
 		#温湿度、光线参数提取
@@ -78,41 +83,35 @@ while True:
 		
 		#data example: "HUMI52;TEMP28;LUX1021;"
 		#LUX有光为30，无光为1000，浮动两字节，自有长度匹配时才进行处理，否则为废串
-		if(25==len(recv) or 27==len(recv)):
+		if(22==len(recv) or 20==len(recv)):
 			recv=recv.decode('ascii') #收到为bytes，转为str
 			load=recv.split(';')
 
 			humidata=re.search(r'HUMI(\d+)', load[0])
-#			print(humidata.group(1))
 			fileRW(humifile, 'w', humidata.group(1))
-		
+			#print(humidata.group(1))
 			tempdata=re.search(r'TEMP(\d+)', load[1])
-#			print(tempdata.group(1))
 			fileRW(tempfile, 'w', tempdata.group(1))
-		
+			#print(tempdata.group(1))
 			luxdata=re.search(r'LUX(\d+)', load[2])
-#			print(luxdata.group(1))
 			fileRW(luxfile, 'w', luxdata.group(1))
+			#print(luxdata.group(1))
 
-			#获取红外人体值，如没人则计时器减少，如有人则计时器重置
-			IRPdata=re.search(r'IRP(\d+)', load[3])
-			if(lightmstate<0):
-				if(1==int(IRPdata.group(1))):
-					IRP_TTL=IRP_TTL_init
-					print(IRP_TTL)
-				else:
-					IRP_TTL-=1
-					print(IRP_TTL)
-				
-				if(int(luxdata.group(1))>500 and IRP_TTL>0):
-					fileRW(lightfile, 'w', 1)
-				elif(IRP_TTL<=0):
-					fileRW(lightfile, 'w', 0)
-				setLight(mys0,lightstate, 3)
-			else:
-				setLight(mys0,lightmstate, 3)
-
-
+		elif('IRPACTIVE'==recv.decode('ascii') and lightmstate<0):
+			if(lux>500 and IRP_TTL<=0):
+				setLight(mys0,1,3)
+				fileRW(lightfile, 'w', 1)
+			IRP_TTL=IRP_TTL_init
+			print(IRP_TTL)
+			print(lux)
+		else:
+			IRP_TTL-=1
+			print(IRP_TTL)
+			if(0==IRP_TTL):
+				setLight(mys0,0,3)
+				fileRW(lightfile, 'w', 0)
+			elif(IRP_TTL<0):
+				IRP_TTL=0
 	except Exception as e:
 		print(e)
 #		continue

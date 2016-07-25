@@ -298,7 +298,7 @@ img {
 <ul>
 
 <li>
-<h3>距宿舍还有 <strong><em><code>{{distance}}</code></em></strong> km<a href='log'>.</a></h3>
+<h3>主人距宿舍还有 <strong><em><code>{{distance}}</code></em></strong> km<a href='log'>.</a></h3>
 </li>
 
 <li>
@@ -315,23 +315,23 @@ img {
 
 <form name="interact" action="setstate" method="get">
 <li>
-<h3>室灯状态：<strong><em><code>{{light}}</code>&nbsp&nbsp&nbsp<input type="submit" name="setlightstate" value="{{lightbtn}}" />&nbsp&nbsp&nbsp<input type="submit" name="autolight" value="Auto" /></em></strong></h3>
+<h3>室灯状态：<strong><em><code>{{light}}</code>&nbsp&nbsp&nbsp<input type="submit" name="setlightstate" value="{{lightbtn}}" title="手动控制室灯开关" />&nbsp&nbsp&nbsp<input type="submit" name="autolight" value="Auto" title="根据光线、人体侦测自动控制室灯开关" /></em></strong></h3>
 </li>
 
 <li>
-<h3>空调状态：<strong><em><code>{{airc}}</code>&nbsp&nbsp&nbsp<input type="submit" name="setaircstate" value="{{aircbtn}}" />&nbsp&nbsp&nbsp<input type="submit" name="autoairc" value="Auto" /></em></strong></h3>
+<h3>空调状态：<strong><em><code>{{airc}}</code>&nbsp&nbsp&nbsp<input type="submit" name="setaircstate" value="{{aircbtn}}" title="手动控制空调开关" />&nbsp&nbsp&nbsp<input type="submit" name="autoairc" value="Auto" title="根据距离和室温自动控制空调开关" /></em></strong></h3>
 </li>
 
 </form>
 </ul>
-实时监控，并发略卡，请稍等：<br>
+实时监控，略卡请稍等，如图像右下角时间不变化，请刷新网页：<br>
 <iframe src="http://mr6.tech:8880" height=240 width=320></iframe>
 <blockquote>
 <p>
 V1功能：<br />
-与APP配合，进入宿舍500米范围，空调自动开启；<br />
-室灯采用人体感应，低光条件下，来人自动点亮；<br />
-可通过红外和互联网两种方式控制空调、室灯开关；<br />
+与Mr6 APP配合，进入宿舍500米范围，且室温高于26℃空调自动开启；<br />
+室灯采用人体感应，且低光条件下，来人自动点亮；<br />
+可通过IPv6直接控制空调、室灯开关；<br />
 可实时采集宿舍温湿度、采光等数据。<br /><br />
 来访IP：{{clientip}}<br>
 IPv6公共接入平台：<a href="http://6plat.org">http://6plat.org</a>

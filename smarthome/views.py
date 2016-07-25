@@ -15,7 +15,7 @@ def setLocation(request):
 	lo = request.GET.get('lo','')
 	la = request.GET.get('la','')
 
-	fileRW(locationfile,'a',str(getTimeNow()+'<'+la+','+lo+'<'+phoneid+'\n'))
+	fileRW(locationfile,'w',str(getTimeNow()+'<'+la+','+lo+'<'+phoneid+'\n'))
 	#2016-07-05 06:15:49<39.789459,116.557697<70a618c25a2bb852
 	fileRW(distancefile, 'w', str(getDistance()))
 	return HttpResponse()
@@ -70,13 +70,13 @@ def getSensor(request):
 	clientip=getClientIP(request)
 
 	data={\
-	'distance'		:	'{:.8f}'.format(distance), \
-	'temp'			:	fileRW(tempfile), \
-	'humi'			:	fileRW(humifile), \
-	'lux'			:	luxstate, \
-	'light'			:	lightstate,	\
-	'airc'			:	aircstate, \
-	'lightbtn'		:	lightbtn, \
+	'distance'		:	'{:.8f}'.format(distance),\
+	'temp'			:	fileRW(tempfile),\
+	'humi'			:	fileRW(humifile),\
+	'lux'			:	luxstate,\
+	'light'			:	lightstate,\
+	'airc'			:	aircstate,\
+	'lightbtn'		:	lightbtn,\
 	'aircbtn'		:	aircbtn,\
 	'clientip'		:	clientip\
 	}

@@ -14,7 +14,7 @@ distancefile='mr6_distancefile'
 
 aircstate_old=0
 lightstate_old=0
-IRP_TTL=IRP_TTL_init=30
+IRP_TTL=IRP_TTL_init=180
 
 def setAirc(serial, state, times=1):
 	global aircstate_old
@@ -68,9 +68,9 @@ while True:
 				fileRW(aircfile,'w',1)
 			else:
 				fileRW(aircfile,'w',0)
-			setAirc(mys0,aircstate,2)
+			setAirc(mys0,aircstate,3)
 		else:
-			setAirc(mys0,aircmstate,2)
+			setAirc(mys0,aircmstate,3)
 
 		if(lightmstate>=0):
 			setLight(mys0,lightmstate,3)
@@ -104,10 +104,14 @@ while True:
 				#print(lux)
 				fileRW(lightfile,'w',1)
 			elif(lux<500):
+				fileRW(lightfile,'w',0)
 				continue
 			IRP_TTL=IRP_TTL_init
 			print(IRP_TTL)
 		else:
+			if(lux<500):
+				fileRW(lightfile,'w',0)
+				continue
 			IRP_TTL-=1
 			print(IRP_TTL)
 			if(0==IRP_TTL):

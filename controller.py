@@ -20,16 +20,21 @@ def setAirc(serial, state, times=1):
 	global aircstate_old
 	state=int(state)
 	i=0
-	msgon=b'00001001:00KT:01:0001'
-	msgoff=b'00001001:00KT:01:0000'
+	msg_on=b'00001001:00KT:01:0001'
+	msg_off=b'00001001:00KT:01:0000'
+	msg_unSwing=b'00001001:00KT:01:0002'
 	if(state!=aircstate_old):
 		if(1==state):
 			for i in range(0,times):
-				serial.write(msgon)
+				serial.write(msg_on)
 				time.sleep(1.5)
 		if(0==state):
 			for i in range(0,times):
-				serial.write(msgoff)
+				serial.write(msg_off)
+				time.sleep(1.5)
+		if(2==state):
+			for i in range(0,times):
+				serial.write(msg_unSwing)
 				time.sleep(1.5)
 		aircstate_old=state
 
@@ -37,18 +42,18 @@ def setLight(serial, state, times=1):
 	global lightstate_old
 	state=int(state)
 	i=0
-	msgon=b'00001001:00DD:01:0000'
-	msgoff=b'00001001:00DD:01:0001'
+	msg_on=b'00001001:00DD:01:0000'
+	msg_off=b'00001001:00DD:01:0001'
 	if(state!=lightstate_old):
 		if(1==state):
 			#print('hereon')
 			for i in range(0,times):
-				serial.write(msgon)
+				serial.write(msg_on)
 				time.sleep(0.5)
 		if(0==state):
 			#print('hereoff')
 			for i in range(0,times):
-				serial.write(msgoff)
+				serial.write(msg_off)
 				time.sleep(0.5)
 		lightstate_old=state
 

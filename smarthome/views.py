@@ -32,12 +32,19 @@ def getSensor(request):
 	if(1==int(aircstate)):
 		aircbtn='Off'
 		aircstate='On'
+		aircswingbtn='unSwing'
 	elif(0==int(aircstate)):
 		aircbtn='On'
 		aircstate='Off'
+		aircswingbtn='unSwing'
+	elif(2==int(aircstate)):
+		aircbtn='Off'
+		aircstate='On'
+		aircswingbtn='Swing'
 	else:
 		aircbtn=''
 		aircstate=''
+		aircswingbtn=''
 
 	lightmstate=int(fileRW(lightmfile))
 	print(lightmstate)
@@ -78,7 +85,8 @@ def getSensor(request):
 	'airc'			:	aircstate,\
 	'lightbtn'		:	lightbtn,\
 	'aircbtn'		:	aircbtn,\
-	'clientip'		:	clientip\
+	'clientip'		:	clientip,\
+	'aircswingbtn'		:	aircswingbtn\
 	}
 
 	return render(request,'show.html',data)
@@ -86,9 +94,10 @@ def getSensor(request):
 def setState(request):
 	clientip=getClientIP(request)
 	setlightstate=request.GET.get('setlightstate','')
-	setaircstate=request.GET.get('setaircstate','')
 	autolightstate=request.GET.get('autolight','')
+	setaircstate=request.GET.get('setaircstate','')
 	autoaircstate=request.GET.get('autoairc','')
+	setaircswing=request.GET.get('swing','')
 
 	if(setlightstate):
 		if('On'==setlightstate):
@@ -100,12 +109,18 @@ def setState(request):
 	elif(autolightstate):
 		fileRW(lightmfile, 'w',	-1)
 		fileRW(logfile, 'a', getTimeNow()+'>'+clientip+'>set_light_to>auto'+'\n')
-
-	if(setaircstate):
+	elif(setaircstate):
 		if('On'==setaircstate):
 			setaircdigital=1
 		elif('Off'==setaircstate):
 			setaircdigital=0
+		fileRW(aircmfile, 'w', setaircdigital)
+		fileRW(logfile, 'a', getTimeNow()+'>'+clientip+'>set_airc_to>'+str(setaircdigital)+'\n')
+	elif(setaircswing):
+		if('Swing'==setaircswing):
+			setaircdigital=1
+		elif('unSwing'==setaircswing):
+			setaircdigital=2
 		fileRW(aircmfile, 'w', setaircdigital)
 		fileRW(logfile, 'a', getTimeNow()+'>'+clientip+'>set_airc_to>'+str(setaircdigital)+'\n')
 	elif(autoaircstate):

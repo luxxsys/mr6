@@ -87,20 +87,21 @@ while True:
 		#温湿度、光线参数提取
 		#readline()接收一行数据直到遇到\n，净化、并将bytes解析为str
 		recv=(mys0.readline().strip()).decode('ascii')
+		#print(len(recv))
 		print(recv)
 		
 		#data example: "HUMI52;TEMP28;LUX1021;"
 		#LUX有光为30，无光为1000，浮动两字节，自有长度匹配时才进行处理，否则为废串
-		if(22==len(recv) or 20==len(recv)):
+		if(8==len(recv) or 6==len(recv)):
 			load=recv.split(';')
 
-			humidata=re.search(r'HUMI(\d+)', load[0])
-			fileRW(humifile, 'w', humidata.group(1))
+			#humidata=re.search(r'HUMI(\d+)', load[0])
+			#fileRW(humifile, 'w', humidata.group(1))
 			#print(humidata.group(1))
-			tempdata=re.search(r'TEMP(\d+)', load[1])
-			fileRW(tempfile, 'w', tempdata.group(1))
+			#tempdata=re.search(r'TEMP(\d+)', load[1])
+			#fileRW(tempfile, 'w', tempdata.group(1))
 			#print(tempdata.group(1))
-			luxdata=re.search(r'LUX(\d+)', load[2])
+			luxdata=re.search(r'LUX(\d+)', load[0])
 			fileRW(luxfile, 'w', luxdata.group(1))
 			#print(luxdata.group(1))
 
